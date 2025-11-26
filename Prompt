@@ -1,0 +1,35 @@
+"""
+FBLA Introduction to Programming 2025-2026 Project Prompt
+
+Build a Virtual Pet
+
+Design and develop a Python program that creates a digital pet which users can interact with and care for over time.
+
+Your program should allow users to:
+    - Name and customize their pet (choose pet type, color, etc.)
+    - Feed, play, rest, clean, and check the health of the pet
+    - Monitor the pet’s responses (happy, energetic, tired, sad, sick) based on how well it is cared for
+    - Experience growth, evolution, or new abilities in the pet as time progresses and based on user actions
+
+Add a “cost of care” system to teach users about financial responsibility—track and display expenses for food, supplies, healthcare, toys, and more. You may include ways to earn money, set savings goals, or budget in-game currency.
+
+Requirements:
+    - Use Python for the entire project
+    - Demonstrate basic logic, variables, conditionals, functions, and data structures
+    - Make navigation easy, with clear instructions and robust input validation
+    - Add creative features such as pet evolution, earning badges, or new tricks
+
+Documentation to submit:
+    - A README file for instructions
+    - Well-commented source code
+    - List any libraries/templates used
+
+Prepare to present your program:
+    - How requirements are met
+    - User experience highlights
+    - Code quality and logic
+    - Cost of care system details
+    - Enhancements and creative features
+
+Good luck!
+"""
