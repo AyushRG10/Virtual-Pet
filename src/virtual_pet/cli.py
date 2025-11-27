@@ -13,7 +13,8 @@ from .pet import Pet
 
 console = Console()
 
-SAVE_FILE = Path("pet_save.json")
+SAVE_DIR = Path.home() / ".virtual_pet"
+SAVE_FILE = SAVE_DIR / "pet_save.json"
 
 
 def _creature_frames(pet: Pet) -> list[str]:
@@ -83,19 +84,27 @@ def render_pet(pet: Pet) -> Table:
 
 
 def show_animation(message: str, seconds: float = 1.0) -> None:
-    """Show a tiny animated spinner with a short message using Rich."""
-    spinner = Spinner("dots", text=Text(message))
-    with Live(spinner, refresh_per_second=12, transient=True, console=console):
+    """Show a tiny animated spinner with a short message using Rich.
+
+    Use console.status instead of creating a nested Live renderable to avoid
+    creating extra output lines or interfering with the main Live container.
+    """
+    with console.status(message, spinner="dots"):
         time.sleep(seconds)
 
 
 def save_pet(pet: Pet) -> None:
+    SAVE_DIR.mkdir(parents=True, exist_ok=True)
     SAVE_FILE.write_text(pet.to_json())
 
 
 def load_pet() -> Pet | None:
     if SAVE_FILE.exists():
-        return Pet.from_json(SAVE_FILE.read_text())
+        try:
+            return Pet.from_json(SAVE_FILE.read_text())
+        except Exception:
+            # If loading fails, don't crash the CLI; user can create a new pet
+            return None
     return None
 
 
@@ -113,7 +122,8 @@ def run_cli() -> None:
     with Live(render_pet(pet), refresh_per_second=4, transient=False, console=console) as live:
         try:
             while pet.is_alive():
-                console.print()
+                # avoid printing a blank line here; printing while Live is active
+                # pushes the whole layout down and creates extra empty lines.
                 console.print("Actions: [1] Feed  [2] Play  [3] Rest  [4] Save & Exit")
                 choice = console.input("Choose an action (number): ")
                 if choice.strip() == "1":

@@ -37,15 +37,36 @@ class Pet:
             self.happiness = min(100, self.happiness + 1)
 
     def is_alive(self) -> bool:
-        return not (self.hunger >= 100 and self.energy <= 0)
+        """Return True while pet is alive.
+
+        The pet dies if hunger reaches or exceeds 100 OR energy falls to 0 or below.
+        Previously the pet only died if both conditions were true which let the
+        pet stay alive in clearly fatal states.
+        """
+        if self.hunger >= 100:
+            return False
+        if self.energy <= 0:
+            return False
+        return True
 
     def status(self) -> Dict[str, int]:
         return asdict(self)
 
     def to_json(self) -> str:
-        return json.dumps(asdict(self))
+        # Include a simple schema version so future changes can be handled.
+        obj = asdict(self)
+        obj["__schema_version"] = 1
+        return json.dumps(obj)
 
     @staticmethod
     def from_json(data: str) -> "Pet":
         obj = json.loads(data)
-        return Pet(**obj)
+        # accept either raw fields or full object with schema version
+        # tolerate missing keys with reasonable defaults
+        name = obj.get("name")
+        if name is None:
+            raise ValueError("Missing 'name' in pet JSON")
+        hunger = int(obj.get("hunger", 50))
+        happiness = int(obj.get("happiness", 50))
+        energy = int(obj.get("energy", 50))
+        return Pet(name=name, hunger=hunger, happiness=happiness, energy=energy)

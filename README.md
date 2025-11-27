@@ -18,18 +18,18 @@ python -m venv .venv; .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 ```
 
-Run the CLI:
+Run the CLI (interactive):
 
-From the workspace root you can run the package directly (recommended) if you have installed dependencies:
-
-```powershell
-python -m virtual_pet
-```
-
-Or run the CLI module directly:
+From the workspace root you can run the module directly (no install required):
 
 ```powershell
 python -m src.virtual_pet.cli
+```
+
+If you install the package (pip install -e . or a built package) you can run the installed console script:
+
+```powershell
+virtual-pet
 ```
 
 Run tests:
@@ -44,3 +44,5 @@ Enjoy your virtual pet! 🐾
 Animation library: This project uses the `rich` library to provide small line animations (spinners and live table updates) for a more pleasant terminal experience.
 
 Creature art: The CLI shows a small ASCII art pet (a dog–cat hybrid) that animates subtly while the UI updates. The artwork appears in the right-hand panel of the UI and changes frames to give a little movement.
+
+Save location: The CLI saves state to a user-local path by default so your saves persist between runs and avoid cluttering the project folder. On Windows the default is `%USERPROFILE%\\.virtual_pet\\pet_save.json` and on Unix/macOS it is `$HOME/.virtual_pet/pet_save.json`.

@@ -3,10 +3,13 @@ name = "virtual-pet"
 version = "0.1.0"
 description = "Small terminal-based Virtual Pet with simple line animations using Rich"
 authors = ["You <you@example.com>"]
+requires-python = ">=3.10"
+dependencies = [
+	"rich>=13.0.0",
+]
 
-[project.dependencies]
-python = ">=3.10"
-rich = "^13.0.0"
+[project.scripts]
+virtual-pet = "virtual_pet.cli:run_cli"
 
 [build-system]
 requires = ["setuptools>=61.0"]

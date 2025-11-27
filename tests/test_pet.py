@@ -1,9 +1,3 @@
-import os
-import sys
-
-# Ensure `src` is on sys.path so tests can import virtual_pet during local test runs
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
-
 from virtual_pet.pet import Pet
 
 
@@ -41,3 +35,21 @@ def test_serialization_roundtrip():
     s = p.to_json()
     p2 = Pet.from_json(s)
     assert p == p2
+
+
+def test_is_alive_behavior():
+    p = Pet("DeadHungry", hunger=100, energy=50)
+    assert not p.is_alive()
+
+    p2 = Pet("DeadTired", hunger=10, energy=0)
+    assert not p2.is_alive()
+
+    p3 = Pet("Alive", hunger=10, energy=10)
+    assert p3.is_alive()
+
+
+def test_from_json_missing_fields():
+    s = '{"name": "Mystery"}'
+    p = Pet.from_json(s)
+    assert p.name == "Mystery"
+    assert p.hunger == 50 and p.energy == 50 and p.happiness == 50
