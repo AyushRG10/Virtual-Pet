@@ -42,3 +42,5 @@ pytest -q
 Enjoy your virtual pet! 🐾
 
 Animation library: This project uses the `rich` library to provide small line animations (spinners and live table updates) for a more pleasant terminal experience.
+
+Creature art: The CLI shows a small ASCII art pet (a dog–cat hybrid) that animates subtly while the UI updates. The artwork appears in the right-hand panel of the UI and changes frames to give a little movement.

@@ -6,6 +6,8 @@ from rich.live import Live
 from rich.console import Console
 from rich.table import Table
 from rich.text import Text
+from rich.panel import Panel
+from rich.align import Align
 from rich.spinner import Spinner
 from .pet import Pet
 
@@ -14,15 +16,70 @@ console = Console()
 SAVE_FILE = Path("pet_save.json")
 
 
+def _creature_frames(pet: Pet) -> list[str]:
+    """Return two small ASCII frames for a dog-cat hybrid creature.
+
+    The creature is purposely simple so it fits comfortably into small terminals.
+    Frames differ by a small tail/ear/eye change to give a subtle animation.
+    We also vary the eyes slightly based on happiness (bright eyes when happy).
+    """
+
+    # choose eye char based on happiness
+    eye_open = "o"
+    eye_sleep = "-"
+    eye = eye_open if pet.happiness > 40 else eye_sleep
+
+    # two frames: tail-left and tail-right
+    frame_a = fr"""
+         /\_/\   (
+        ( {eye}.{eye} )  ~ Woof-Cat
+         (  =^= )  
+        (  )  
+         UU   /|
+            / |
+        """.strip("\n")
+
+    frame_b = fr"""
+         /\_/\   (
+        ( {eye}.{eye} )  ~ Meow-Dog
+         (  =^= )
+          (  )  
+           UU    |\
+            | \
+        """.strip("\n")
+
+    return [frame_a, frame_b]
+
+
+def render_creature(pet: Pet) -> Panel:
+    """Create a Panel containing a small animated creature (selects frame by time)."""
+    frames = _creature_frames(pet)
+    # turn-over rate ~ 2 frames / sec — use current time to pick a frame
+    index = int(time.time() * 2) % len(frames)
+    art = frames[index]
+
+    # add a small status line hinting at the pet's mood
+    mood = "happy" if pet.happiness > 60 else "content" if pet.happiness > 30 else "grumpy"
+    title = f"{pet.name} — {mood}"
+    return Panel(Align.center(Text(art, justify="center"), vertical="middle"), title=title, padding=(0,1))
+
+
 def render_pet(pet: Pet) -> Table:
-    t = Table(expand=True)
-    t.add_column("Property")
-    t.add_column("Value", justify="right")
-    t.add_row("Name", pet.name)
-    t.add_row("Hunger", f"{pet.hunger}/100")
-    t.add_row("Happiness", f"{pet.happiness}/100")
-    t.add_row("Energy", f"{pet.energy}/100")
-    return t
+    # left: property table, right: creature panel
+    left = Table(expand=True)
+    left.add_column("Property")
+    left.add_column("Value", justify="right")
+    left.add_row("Name", pet.name)
+    left.add_row("Hunger", f"{pet.hunger}/100")
+    left.add_row("Happiness", f"{pet.happiness}/100")
+    left.add_row("Energy", f"{pet.energy}/100")
+
+    # outer grid: two columns (properties + creature)
+    outer = Table.grid(expand=True)
+    outer.add_column(ratio=2)
+    outer.add_column(ratio=1)
+    outer.add_row(left, render_creature(pet))
+    return outer
 
 
 def show_animation(message: str, seconds: float = 1.0) -> None:
